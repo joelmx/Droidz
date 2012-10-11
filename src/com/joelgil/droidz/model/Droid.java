@@ -1,5 +1,7 @@
 package com.joelgil.droidz.model;
 
+import com.joelgil.droidz.model.components.Speed;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
@@ -9,11 +11,13 @@ public class Droid {
 	private int x; // the X coordinate
 	private int y; // the Y coordinate
 	private boolean touched; // if droid is touched/picked up
+	private Speed speed; // the speed with its directions
 
 	public Droid(Bitmap bitmap, int x, int y) {
 		this.bitmap = bitmap;
 		this.x = x;
 		this.y = y;
+		this.speed = new Speed();
 	}
 
 	public Bitmap getBitmap() {
@@ -48,14 +52,45 @@ public class Droid {
 		this.touched = touched;
 	}
 
-	public void draw(Canvas canvas) {
-		canvas.drawBitmap(bitmap, x - (bitmap.getWidth() / 2), y - (bitmap.getHeight() / 2), null);
+	public void setSpeed(Speed speed) {
+		this.speed = speed;
 	}
 
+	public Speed getSpeed() {
+		return speed;
+	}
+
+	public void draw(Canvas canvas) {
+		canvas.drawBitmap(bitmap, x - (bitmap.getWidth() / 2),
+				y - (bitmap.getHeight() / 2), null);
+	}
+
+	/**
+	 * Method which updates the droid's internal state every tick
+	 */
+	public void update() {
+		if (!touched) {
+			x += (int) (speed.getXv() * speed.getxDirection());
+			y += (int) (speed.getYv() * speed.getyDirection());
+		}
+	}
+
+	/**
+	 * Handles the {@link MotionEvent.ACTION_DOWN} event. If the event happens
+	 * on the bitmap surface then the touched state is set to <code>true</code>
+	 * otherwise to <code>false</code>
+	 * 
+	 * @param eventX
+	 *            - the event's X coordinate
+	 * @param eventY
+	 *            - the event's Y coordinate
+	 */
 	public void handleActionDown(int eventX, int eventY) {
-		if (eventX >= (x - bitmap.getWidth() / 2) && (eventX <= (x + bitmap.getWidth() / 2))) {
-			if (eventY >= (y - bitmap.getHeight() / 2) && (y <= (y + bitmap.getHeight() / 2))) {
-				// droid touched	
+		if (eventX >= (x - bitmap.getWidth() / 2)
+				&& (eventX <= (x + bitmap.getWidth() / 2))) {
+			if (eventY >= (y - bitmap.getHeight() / 2)
+					&& (y <= (y + bitmap.getHeight() / 2))) {
+				// droid touched
 				setTouched(true);
 			} else {
 				setTouched(false);
@@ -65,4 +100,5 @@ public class Droid {
 		}
 
 	}
+
 }
