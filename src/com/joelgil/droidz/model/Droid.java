@@ -1,7 +1,6 @@
 package com.joelgil.droidz.model;
 
 import com.joelgil.droidz.model.components.Speed;
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -20,6 +21,9 @@ public class MainGamePanel extends SurfaceView implements
 
 	private MainThread thread;
 	private Droid droid;
+
+	// the fps to be displayed
+	private String avgFps;
 
 	public MainGamePanel(Context context) {
 
@@ -100,17 +104,35 @@ public class MainGamePanel extends SurfaceView implements
 		return true;
 	}
 
-	protected void render(Canvas canvas) {
-		// fills the canvas with black
-		canvas.drawColor(Color.BLACK);
-		droid.draw(canvas);
+	public void setAvgFps(String avgFps) {
+		this.avgFps = avgFps;
 	}
 
+	public void render(Canvas canvas) {
+		canvas.drawColor(Color.BLACK);
+		droid.draw(canvas);
+		// display fps
+		displayFps(canvas, avgFps);
+	}
+
+	private void displayFps(Canvas canvas, String fps) {
+		if (canvas != null && fps != null) {
+			Paint paint = new Paint();
+			paint.setARGB(255, 255, 255, 255);
+			canvas.drawText(fps, this.getWidth() - 50, 20, paint);
+		}
+	}
+
+	/**
+	 * This is the game update method. It iterates through all the objects and
+	 * calls their update method if they have one or calls specific engine's
+	 * update method.
+	 */
 	public void update() {
 		// check collision with right wall if heading right
 		if (droid.getSpeed().getxDirection() == Speed.DIRECTION_RIGHT
 				&& droid.getX() + droid.getBitmap().getWidth() / 2 >= getWidth()) {
-			
+
 			droid.getSpeed().toggleXDirection();
 		}
 		// check collision with left wall if heading left
